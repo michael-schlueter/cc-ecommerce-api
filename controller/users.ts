@@ -1,6 +1,16 @@
 import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
-import { findUserById, findUsers } from "../services/users.services";
+import { addRefreshTokenToWhitelist } from "../services/auth.services";
+import {
+  createUser,
+  findUserByEmail,
+  findUserById,
+  findUsers,
+  validateEmail,
+  validatePassword,
+} from "../services/users.services";
+const { v4: uuidv4 } = require("uuid");
+import { generateTokens } from "../utils/jwt";
 
 const prisma = new PrismaClient();
 
@@ -39,6 +49,53 @@ export const getUserById = async (req: Request, res: Response) => {
     }
 
     return res.status(200).send(user);
+  } catch (err: any) {
+    return res.status(500).send({
+      message: err.message,
+    });
+  }
+};
+
+// @desc Create an user
+// @route POST /api/users
+export const registerUser = async (req: Request, res: Response) => {
+  const { email, password, firstName, lastName } = req.body;
+  try {
+    if (!email || !password) {
+      return res.status(400).send({
+        message: "You must provide an email and a password",
+      });
+    }
+
+    const existingUser = await findUserByEmail(email);
+
+    if (existingUser) {
+      return res.status(400).send({
+        message: "Email already in use",
+      });
+    }
+
+    const validEmail = validateEmail(email);
+    if (!validEmail) {
+      return res.status(400).send({
+        message: "Please enter a valid email address",
+      });
+    }
+
+    const validPassword = validatePassword(password);
+    if (!validPassword) {
+      return res.status(400).send({
+        message:
+          "Password has to have at minimum 8 characters with one lowercase letter, one uppercase letter, one number and one special character",
+      });
+    }
+
+    const user = await createUser({ email, password, firstName, lastName });
+    const jti = uuidv4();
+    const { accessToken, refreshToken } = generateTokens(user, jti);
+    await addRefreshTokenToWhitelist({ jti, refreshToken, userId: user.id });
+
+    return res.status(201).send({ accessToken, refreshToken });
   } catch (err: any) {
     return res.status(500).send({
       message: err.message,
