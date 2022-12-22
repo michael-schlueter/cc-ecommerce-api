@@ -7,6 +7,7 @@ import {
   findUserByEmail,
   findUserById,
   findUsers,
+  removeUser,
   validateEmail,
   validatePassword,
 } from "../services/users.services";
@@ -222,6 +223,36 @@ export const updateUser = async (req: Request, res: Response) => {
     }
 
     return res.status(200).send(updatedUser);
+  } catch (err: any) {
+    return res.status(500).send({
+      message: err.message,
+    });
+  }
+};
+
+// @desc Delete specific user
+// @route DELETE /api/users/id
+export const deleteUser = async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  try {
+    const userToDelete = await findUserById(parseInt(id));
+
+    if (!userToDelete) {
+      return res.status(404).send({
+        message: "User not found",
+      });
+    }
+
+    if (req.payload?.userId !== userToDelete.id) {
+      return res.status(403).send({
+        message: "Not authorized to delete user",
+      });
+    }
+
+    await removeUser(parseInt(id));
+
+    return res.sendStatus(204);
   } catch (err: any) {
     return res.status(500).send({
       message: err.message,

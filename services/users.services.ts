@@ -68,3 +68,11 @@ export const editUser = (
     },
   });
 };
+
+export const removeUser = (id: number) => {
+  return prisma.user.delete({
+    where: {
+      id,
+    },
+  });
+};
