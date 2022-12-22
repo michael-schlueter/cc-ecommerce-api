@@ -11,6 +11,7 @@ import {
 } from "../services/users.services";
 const { v4: uuidv4 } = require("uuid");
 import { generateTokens } from "../utils/jwt";
+const bcrypt = require("bcrypt");
 
 const prisma = new PrismaClient();
 
@@ -96,6 +97,52 @@ export const registerUser = async (req: Request, res: Response) => {
     await addRefreshTokenToWhitelist({ jti, refreshToken, userId: user.id });
 
     return res.status(201).send({ accessToken, refreshToken });
+  } catch (err: any) {
+    return res.status(500).send({
+      message: err.message,
+    });
+  }
+};
+
+// @desc Login user
+// @desc POST /api/users/login
+export const loginUser = async (req: Request, res: Response) => {
+  const { email, password } = req.body;
+  try {
+    if (!email || !password) {
+      return res.status(400).send({
+        message: "You must provide an email and a password",
+      });
+    }
+
+    const existingUser = await findUserByEmail(email);
+
+    if (!existingUser) {
+      return res.status(401).send({
+        message: "Invalid login credentials",
+      });
+    }
+
+    const validPassword = await bcrypt.compare(password, existingUser.password);
+
+    if (!validPassword) {
+      return res.status(401).send({
+        message: "Invalid login credentials",
+      });
+    }
+
+    const jti = uuidv4();
+    const { accessToken, refreshToken } = generateTokens(existingUser, jti);
+    await addRefreshTokenToWhitelist({
+      jti,
+      refreshToken,
+      userId: existingUser.id,
+    });
+
+    return res.status(201).send({
+      accessToken,
+      refreshToken,
+    });
   } catch (err: any) {
     return res.status(500).send({
       message: err.message,
