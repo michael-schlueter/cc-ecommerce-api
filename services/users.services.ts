@@ -2,10 +2,10 @@ import { PrismaClient } from "@prisma/client";
 const bcrypt = require("bcrypt");
 
 interface INewUser {
-    email: string;
-    password: string;
-    firstName: string;
-    lastName: string;
+  email: string;
+  password: string;
+  firstName: string;
+  lastName: string;
 }
 
 const prisma = new PrismaClient();
@@ -43,8 +43,28 @@ export const validatePassword = (password: string) => {
 };
 
 export const createUser = (user: INewUser) => {
-    user.password = bcrypt.hashSync(user.password, 12);
-    return prisma.user.create({
-        data: user,
-    })
-}
+  user.password = bcrypt.hashSync(user.password, 12);
+  return prisma.user.create({
+    data: user,
+  });
+};
+
+export const editUser = (
+  id: number,
+  email: string,
+  password: string,
+  firstName: string,
+  lastName: string
+) => {
+  return prisma.user.update({
+    where: {
+      id: id,
+    },
+    data: {
+      email,
+      password: bcrypt.hashSync(password, 12),
+      firstName,
+      lastName,
+    },
+  });
+};

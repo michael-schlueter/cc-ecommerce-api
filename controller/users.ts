@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import { addRefreshTokenToWhitelist } from "../services/auth.services";
 import {
   createUser,
+  editUser,
   findUserByEmail,
   findUserById,
   findUsers,
@@ -143,6 +144,84 @@ export const loginUser = async (req: Request, res: Response) => {
       accessToken,
       refreshToken,
     });
+  } catch (err: any) {
+    return res.status(500).send({
+      message: err.message,
+    });
+  }
+};
+
+// @desc Update specific user
+// @route /api/users/id
+export const updateUser = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { email, password, firstName, lastName } = req.body;
+
+  try {
+    if (
+      email === "" ||
+      email == null ||
+      password === "" ||
+      password == null ||
+      firstName === "" ||
+      firstName == null ||
+      lastName === "" ||
+      lastName == null
+    ) {
+      return res.status(400).send({
+        message:
+          "User data is missing (email, password, first and last name are required",
+      });
+    }
+
+    const validEmail = validateEmail(email);
+    if (!validEmail) {
+      return res.status(400).send({
+        message: "Please enter a valid email address",
+      });
+    }
+
+    const validPassword = validatePassword(password);
+    if (!validPassword) {
+      return res.status(400).send({
+        message:
+          "Password has to have at minimum 8 characters with one lowercase letter, one uppercase letter, one number and one special character",
+      });
+    }
+
+    // Check if the user who is updating user information is the user him/herself
+    const user = await findUserById(req.payload!.userId);
+    const userToUpdate = await findUserById(parseInt(id));
+
+    if (req.payload!.userId !== userToUpdate?.id) {
+      return res.status(403).send({
+        message: "Not authorized to update user information",
+      });
+    }
+
+    if (userToUpdate?.email !== email) {
+      if ((await findUserByEmail(email)) !== null) {
+        return res.status(400).send({
+          message: "Email already in use by another user",
+        });
+      }
+    }
+
+    const updatedUser = await editUser(
+      parseInt(id),
+      email,
+      password,
+      firstName,
+      lastName
+    );
+
+    if (!updatedUser) {
+      return res.status(404).send({
+        message: "User not found",
+      });
+    }
+
+    return res.status(200).send(updatedUser);
   } catch (err: any) {
     return res.status(500).send({
       message: err.message,
