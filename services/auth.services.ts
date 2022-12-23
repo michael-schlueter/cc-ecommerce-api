@@ -23,3 +23,24 @@ export const addRefreshTokenToWhitelist = ({
     },
   });
 };
+
+// Used when checking if the token sent by the client is in the database
+export const findRefreshTokenById = (id: string) => {
+  return prisma.refreshToken.findUnique({
+    where: {
+      id,
+    },
+  });
+};
+
+// Soft delete token after usage
+export const deleteRefreshToken = (id: string) => {
+  return prisma.refreshToken.update({
+    where: {
+      id,
+    },
+    data: {
+      revoked: true,
+    },
+  });
+};

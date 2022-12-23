@@ -7,6 +7,7 @@ import {
   loginUser,
   registerUser,
   updateUser,
+  validateRefreshToken,
 } from "../controller/users";
 import { checkAuthentication } from "../middleware";
 
@@ -18,5 +19,6 @@ userRouter.post("/", registerUser);
 userRouter.post("/login", loginUser);
 userRouter.put("/:id", checkAuthentication, updateUser);
 userRouter.delete("/:id", checkAuthentication, deleteUser);
+userRouter.post("/refreshToken", checkAuthentication, validateRefreshToken);
 
 module.exports = userRouter;

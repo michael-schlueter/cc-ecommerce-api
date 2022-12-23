@@ -1,6 +1,10 @@
 import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
-import { addRefreshTokenToWhitelist } from "../services/auth.services";
+import {
+  addRefreshTokenToWhitelist,
+  deleteRefreshToken,
+  findRefreshTokenById,
+} from "../services/auth.services";
 import {
   createUser,
   editUser,
@@ -11,9 +15,11 @@ import {
   validateEmail,
   validatePassword,
 } from "../services/users.services";
+import { hashToken } from "../utils/hashToken";
 const { v4: uuidv4 } = require("uuid");
 import { generateTokens } from "../utils/jwt";
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 const prisma = new PrismaClient();
 
@@ -253,6 +259,52 @@ export const deleteUser = async (req: Request, res: Response) => {
     await removeUser(parseInt(id));
 
     return res.sendStatus(204);
+  } catch (err: any) {
+    return res.status(500).send({
+      message: err.message,
+    });
+  }
+};
+
+// @desc Validate and delete/renew refresh token
+// @route POST /api/users/refreshToken
+export const validateRefreshToken = async (req: Request, res: Response) => {
+  const { refreshToken } = req.body;
+  try {
+    if (!refreshToken) {
+      return res.status(400).send("Missing refresh token");
+    }
+
+    const payload = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
+    const savedRefreshToken = await findRefreshTokenById(payload.jti);
+
+    if (!savedRefreshToken || savedRefreshToken.revoked === true) {
+      return res.status(401).send("Unauthorized");
+    }
+
+    const hashedToken = hashToken(refreshToken);
+    if (hashedToken !== savedRefreshToken.hashedToken) {
+      return res.status(401).send("Unauthorized");
+    }
+
+    const user = await findUserById(payload.userId);
+    if (!user) {
+      return res.status(401).send("Unauthorized");
+    }
+
+    await deleteRefreshToken(savedRefreshToken.id);
+    const jti = uuidv4();
+    const { accessToken, refreshToken: newRefreshToken } = generateTokens(
+      user,
+      jti
+    );
+    await addRefreshTokenToWhitelist({
+      jti,
+      refreshToken: newRefreshToken,
+      userId: user.id,
+    });
+
+    return res.status(201).send({ accessToken, refreshToken: newRefreshToken });
   } catch (err: any) {
     return res.status(500).send({
       message: err.message,
