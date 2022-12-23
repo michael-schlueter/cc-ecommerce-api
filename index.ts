@@ -5,6 +5,7 @@ const logger = require("morgan");
 dotenv.config();
 
 const userRouter = require("./routes/users");
+const productRouter = require("./routes/products");
 
 const app: Express = express();
 const port = process.env.PORT;
@@ -14,6 +15,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/users", userRouter);
+app.use("/api/products", productRouter);
 
 app.use("/", (req, res) => {
   res.status(404).send('Route Not Found: Please use the /api-docs endpoint')

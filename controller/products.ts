@@ -45,3 +45,4 @@ export const getProductById = async (req: Request, res: Response) => {
     });
   }
 };
+
