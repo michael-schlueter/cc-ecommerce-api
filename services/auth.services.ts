@@ -44,3 +44,14 @@ export const deleteRefreshToken = (id: string) => {
     },
   });
 };
+
+export const revokeTokens = (userId: number) => {
+  return prisma.refreshToken.updateMany({
+    where: {
+      userId,
+    },
+    data: {
+      revoked: true,
+    },
+  });
+};

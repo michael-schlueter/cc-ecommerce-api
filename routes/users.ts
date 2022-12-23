@@ -20,5 +20,6 @@ userRouter.post("/login", loginUser);
 userRouter.put("/:id", checkAuthentication, updateUser);
 userRouter.delete("/:id", checkAuthentication, deleteUser);
 userRouter.post("/refreshToken", checkAuthentication, validateRefreshToken);
+// userRouter.post("/:id", checkAuthentication, revokeRefreshTokens); ADMIN ROUTE
 
 module.exports = userRouter;

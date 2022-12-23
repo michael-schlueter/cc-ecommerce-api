@@ -4,6 +4,7 @@ import {
   addRefreshTokenToWhitelist,
   deleteRefreshToken,
   findRefreshTokenById,
+  revokeTokens,
 } from "../services/auth.services";
 import {
   createUser,
@@ -311,3 +312,28 @@ export const validateRefreshToken = async (req: Request, res: Response) => {
     });
   }
 };
+
+// @desc Revoke refresh token for a specific user
+// @route POST /api/users/id
+// ADMIN ROUTE
+// export const revokeRefreshTokens = async (req: Request, res: Response) => {
+//   try {
+//     const { userId } = req.body;
+
+//     const user = findUserById(userId);
+//     if (!user) {
+//       return res.status(404).send({
+//         message: "User not found"
+//       })
+//     }
+
+//     await revokeTokens(userId);
+//     return res.status(201).send({
+//       message: `Tokens revoked for user with id ${userId}`
+//     })
+//   } catch (err: any) {
+//     res.status(500).send({
+//       message: err.message
+//     })
+//   }
+// }
