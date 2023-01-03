@@ -19,6 +19,10 @@ export const findUserById = (id: number) => {
     where: {
       id,
     },
+    include: {
+      cart: true,
+      order: true,
+    }
   });
 };
 
@@ -27,6 +31,10 @@ export const findUserByEmail = (email: string) => {
     where: {
       email,
     },
+    include: {
+      cart: true,
+      order: true,
+    }
   });
 };
 
