@@ -55,25 +55,11 @@ async function main() {
             price: 12.99,
             image: "/images/tshirt.jpg",
             category: {
-                create: [
+                create:
                     {
                         description: "Summer"
                     },
-                    {
-                        description: "Men"
-                    }
-                ]
             }
-        }
-    })
-    const pullover = await prisma.product.upsert({
-        where: { id: 2 },
-        update: {},
-        create: {
-            name: "Pullover",
-            description: "Beautiful beige pullover",
-            price: 24.99,
-            image: "/images/pullover.jpg"
         }
     })
     const suit = await prisma.product.upsert({
@@ -85,35 +71,11 @@ async function main() {
             price: 99.99,
             image: "/images/suit.jpg",
             category: {
-                create: [
+                create:
                     {
                         description: "Men"
                     },
-                    {
-                        description: "Business"
-                    }
-                ]
             }
-        }
-    })
-    const pants = await prisma.product.upsert({
-        where: { id: 4 },
-        update: {},
-        create: {
-            name: "Pants",
-            description: "Slim-fitting pants",
-            price: 44.00,
-            image: "/images/pants.jpg"
-        }
-    })
-    const shorts = await prisma.product.upsert({
-        where: { id: 5 },
-        update: {},
-        create: {
-            name: "Shorts",
-            description: "Sporty shorts",
-            price: 19.99,
-            image: "/images/shorts.jpg"
         }
     })
 }
