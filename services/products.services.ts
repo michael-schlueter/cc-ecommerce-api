@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 export const findProducts = () => {
   return prisma.product.findMany({
     include: {
-      category: true
+      categories: true
     }
   });
 };
@@ -16,9 +16,21 @@ export const findProductById = (id: number) => {
       id,
     },
     include: {
-      category: true
+      categories: true
     }
   });
 };
+
+export const findProductByCategoryId = (id: number) => {
+  return prisma.product.findMany({
+    where: {
+      categories: {
+        some: {
+          id,
+        }
+      }
+    }
+  })
+}
 
 
