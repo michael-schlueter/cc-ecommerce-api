@@ -1,8 +1,9 @@
 import express from "express";
-import { getCartById } from "../controller/carts";
+import { getCartByUserId } from "../controller/carts";
+import { checkAuthentication } from "../middleware";
 
 const cartRouter = express.Router();
 
-cartRouter.get("/", getCartById);
+cartRouter.get("/", checkAuthentication, getCartByUserId);
 
 module.exports = cartRouter;

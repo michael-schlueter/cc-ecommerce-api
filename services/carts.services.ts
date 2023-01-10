@@ -2,10 +2,10 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export const findCartById = (id: number) => {
+export const findCartByUserId = (id: number) => {
   return prisma.cart.findUnique({
     where: {
-      id,
+      userId: id,
     },
     include: {
       cartItem: true,
