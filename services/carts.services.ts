@@ -12,3 +12,12 @@ export const findCartByUserId = (id: number) => {
     },
   });
 };
+
+export const addCart = (userId: number, total: number) => {
+  return prisma.cart.create({
+    data: {
+      userId,
+      total,
+    },
+  });
+};
