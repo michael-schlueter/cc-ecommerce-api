@@ -105,6 +105,48 @@ async function main() {
       },
     },
   });
+  const exampleCartOne = await prisma.cart.upsert({
+    where: { id: 1 },
+    update: {},
+    create: {
+      userId: 1,
+    }
+  });
+  const exampleCartTwo = await prisma.cart.upsert({
+    where: { id: 2 },
+    update: {},
+    create: {
+      userId: 3
+    }
+  });
+  const cartItemTShirt = await prisma.cartItem.upsert({
+    where: { id: 1 },
+    update: {},
+    create: {
+      quantity: 1,
+      cartId: 1,
+      productId: 1
+    }
+  });
+
+  const cartItemSuit = await prisma.cartItem.upsert({
+    where: { id: 2 },
+    update: {},
+    create: {
+      quantity: 2,
+      cartId: 2,
+      productId: 2
+    }
+  });
+  const cartItemTShirtTwo = await prisma.cartItem.upsert({
+    where: { id: 3 },
+    update: {},
+    create: {
+      quantity: 1,
+      cartId: 2,
+      productId: 1
+    }
+  });
 }
 
 main()

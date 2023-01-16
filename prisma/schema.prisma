@@ -19,7 +19,7 @@ model Product {
   categories  Category[]
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
-  cartItem    CartItem?
+  cartItem    CartItem[]
   orderItem   OrderItem?
 }
 
@@ -57,9 +57,10 @@ model CartItem {
   cart      Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
   cartId    Int
   product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
-  productId Int      @unique
+  productId Int      
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  @@unique([cartId, productId])
 }
 
 model Order {
