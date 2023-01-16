@@ -5,6 +5,7 @@ import {
   createCartItem,
   findCartByUserId,
 } from "../services/carts.services";
+import { findProductById } from "../services/products.services";
 
 const prisma = new PrismaClient();
 
@@ -85,6 +86,13 @@ export const addItemToCart = async (req: Request, res: Response) => {
 
     // Get the cart of the user
     const userCart = await findCartByUserId(userId);
+    const product = await findProductById(parseInt(productId));
+
+    if (!product) { 
+      return res.status(400).send({
+        message: "Product does not exist"
+      })
+    }
 
     if (!userCart) {
       return res.status(404).send({
@@ -92,12 +100,12 @@ export const addItemToCart = async (req: Request, res: Response) => {
       });
     }
 
-    // Check if item is already in cart
-    if (userCart.cartItem.find(productId)) {
-      return res.status(400).send({
-        message: "Item is already in cart",
-      });
-    }
+    // Check if item is already in cart REEEEEEEEEEEEEEEEEEEEEWORK
+    // if (userCart.cartItem.find(productId)) {
+    //   return res.status(400).send({
+    //     message: "Item is already in cart",
+    //   });
+    // }
 
     // Add cart item to the cart of the user
     const cartItem = await createCartItem(userCart.id, parseInt(productId));
