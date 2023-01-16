@@ -100,12 +100,12 @@ export const addItemToCart = async (req: Request, res: Response) => {
       });
     }
 
-    // Check if item is already in cart REEEEEEEEEEEEEEEEEEEEEWORK
-    // if (userCart.cartItem.find(productId)) {
-    //   return res.status(400).send({
-    //     message: "Item is already in cart",
-    //   });
-    // }
+    // Check if item is already in cart
+    if (userCart.cartItem.find(cartItem => cartItem.productId === parseInt(productId) && cartItem.cartId === userCart.id)) {
+      return res.status(400).send({
+        message: "Item is already in cart",
+      });
+    }
 
     // Add cart item to the cart of the user
     const cartItem = await createCartItem(userCart.id, parseInt(productId));
