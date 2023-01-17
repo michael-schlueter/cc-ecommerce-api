@@ -25,24 +25,35 @@ export const findCartItemById = (id: number) => {
   return prisma.cartItem.findUnique({
     where: {
       id,
-    }
-  })
-}
+    },
+  });
+};
 
 export const createCartItem = (cartId: number, productId: number) => {
-    return prisma.cartItem.create({
-      data: {
-        quantity: 1,
-        cartId,
-        productId,
-      }
-    })
-}
+  return prisma.cartItem.create({
+    data: {
+      quantity: 1,
+      cartId,
+      productId,
+    },
+  });
+};
 
 export const removeCartItem = (id: number) => {
   return prisma.cartItem.delete({
     where: {
       id,
-    }
-  })
-}
+    },
+  });
+};
+
+export const editQuantity = (id: number, quantity: number) => {
+  return prisma.cartItem.update({
+    where: {
+      id,
+    },
+    data: {
+      quantity,
+    },
+  });
+};

@@ -6,6 +6,7 @@ import {
   findCartByUserId,
   removeCartItem,
   findCartItemById,
+  editQuantity,
 } from "../services/carts.services";
 import { findProductById } from "../services/products.services";
 import { findUserById } from "../services/users.services";
@@ -126,6 +127,54 @@ export const addItemToCart = async (req: Request, res: Response) => {
   }
 };
 
+// @desc Update quantity for an item from a cart
+// @route PUT /api/carts/
+export const updateItemQuantity = async (req: Request, res: Response) => {
+  const userId = req.payload?.userId;
+  const { cartItemId, quantity } = req.body;
+
+  try {
+    // Check if user is logged in
+    if (!userId) {
+      return res.status(400).send({
+        message: "User not logged in",
+      });
+    }
+
+    const cart = await findCartByUserId(userId);
+
+    if (!cart) {
+      return res.status(404).send({
+        message: "Cart not found",
+      });
+    }
+
+    // Check if cartItem belongs to the cart of the user
+    if (!cart.cartItem.find((item) => item.id === parseInt(cartItemId))) {
+      return res.status(400).send({
+        message: "Unauthorized to remove item from this cart",
+      });
+    }
+
+    if (!quantity || quantity === "0") {
+      return res.status(400).send({
+        message: "You have to provide a valid quantity (positive number)",
+      });
+    }
+
+    const updatedCartItem = await editQuantity(
+      parseInt(cartItemId),
+      parseInt(quantity)
+    );
+
+    return res.status(200).send(updatedCartItem);
+  } catch (err: any) {
+    return res.status(500).send({
+      message: err.message,
+    });
+  }
+};
+
 // @desc Delete an item from a cart
 // @route DELETE /api/carts/
 export const deleteItemFromCart = async (req: Request, res: Response) => {
@@ -148,11 +197,11 @@ export const deleteItemFromCart = async (req: Request, res: Response) => {
       });
     }
 
-    // Check if cartItem belong to the cart of the user
-    if (!cart.cartItem.find(item => item.id === parseInt(cartItemId))) {
+    // Check if cartItem belongs to the cart of the user
+    if (!cart.cartItem.find((item) => item.id === parseInt(cartItemId))) {
       return res.status(400).send({
-        message: "Unauthorized to remove item from this cart"
-      })
+        message: "Unauthorized to remove item from this cart",
+      });
     }
     await removeCartItem(parseInt(cartItemId));
 
