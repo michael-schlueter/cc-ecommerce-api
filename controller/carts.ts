@@ -4,8 +4,11 @@ import {
   addCart,
   createCartItem,
   findCartByUserId,
+  removeCartItem,
+  findCartItemById,
 } from "../services/carts.services";
 import { findProductById } from "../services/products.services";
+import { findUserById } from "../services/users.services";
 
 const prisma = new PrismaClient();
 
@@ -88,10 +91,10 @@ export const addItemToCart = async (req: Request, res: Response) => {
     const userCart = await findCartByUserId(userId);
     const product = await findProductById(parseInt(productId));
 
-    if (!product) { 
+    if (!product) {
       return res.status(400).send({
-        message: "Product does not exist"
-      })
+        message: "Product does not exist",
+      });
     }
 
     if (!userCart) {
@@ -101,7 +104,13 @@ export const addItemToCart = async (req: Request, res: Response) => {
     }
 
     // Check if item is already in cart
-    if (userCart.cartItem.find(cartItem => cartItem.productId === parseInt(productId) && cartItem.cartId === userCart.id)) {
+    if (
+      userCart.cartItem.find(
+        (cartItem) =>
+          cartItem.productId === parseInt(productId) &&
+          cartItem.cartId === userCart.id
+      )
+    ) {
       return res.status(400).send({
         message: "Item is already in cart",
       });
@@ -110,6 +119,44 @@ export const addItemToCart = async (req: Request, res: Response) => {
     // Add cart item to the cart of the user
     const cartItem = await createCartItem(userCart.id, parseInt(productId));
     return res.status(201).send(cartItem);
+  } catch (err: any) {
+    return res.status(500).send({
+      message: err.message,
+    });
+  }
+};
+
+// @desc Delete an item from a cart
+// @route DELETE /api/carts/
+export const deleteItemFromCart = async (req: Request, res: Response) => {
+  const userId = req.payload?.userId;
+  const { cartItemId } = req.body;
+
+  try {
+    // Check if user is logged in
+    if (!userId) {
+      return res.status(400).send({
+        message: "User not logged in",
+      });
+    }
+
+    const cart = await findCartByUserId(userId);
+
+    if (!cart) {
+      return res.status(404).send({
+        message: "Cart not found",
+      });
+    }
+
+    // Check if cartItem belong to the cart of the user
+    if (!cart.cartItem.find(item => item.id === parseInt(cartItemId))) {
+      return res.status(400).send({
+        message: "Unauthorized to remove item from this cart"
+      })
+    }
+    await removeCartItem(parseInt(cartItemId));
+
+    return res.sendStatus(204);
   } catch (err: any) {
     return res.status(500).send({
       message: err.message,

@@ -21,6 +21,14 @@ export const addCart = (userId: number) => {
   });
 };
 
+export const findCartItemById = (id: number) => {
+  return prisma.cartItem.findUnique({
+    where: {
+      id,
+    }
+  })
+}
+
 export const createCartItem = (cartId: number, productId: number) => {
     return prisma.cartItem.create({
       data: {
@@ -31,4 +39,10 @@ export const createCartItem = (cartId: number, productId: number) => {
     })
 }
 
-
+export const removeCartItem = (id: number) => {
+  return prisma.cartItem.delete({
+    where: {
+      id,
+    }
+  })
+}
