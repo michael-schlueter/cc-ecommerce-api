@@ -29,7 +29,7 @@ export const findCartItemById = (id: number) => {
   });
 };
 
-export const createCartItem = (cartId: number, productId: number, price: number) => {
+export const createCartItem = (cartId: number, productId: number, price: string) => {
   return prisma.cartItem.create({
     data: {
       quantity: 1,

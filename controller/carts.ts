@@ -8,7 +8,7 @@ import {
   findCartItemById,
   editQuantity,
 } from "../services/carts.services";
-import { addItemsToOrder, createOrder } from "../services/orders.services";
+import { createOrder, generateOrderItems } from "../services/orders.services";
 import { findProductById } from "../services/products.services";
 import { findUserById } from "../services/users.services";
 
@@ -119,7 +119,7 @@ export const addItemToCart = async (req: Request, res: Response) => {
     }
 
     // Add cart item to the cart of the user
-    const cartItem = await createCartItem(userCart.id, parseInt(productId), parseInt(product.price));
+    const cartItem = await createCartItem(userCart.id, parseInt(productId), product.price);
     return res.status(201).send(cartItem);
   } catch (err: any) {
     return res.status(500).send({
@@ -242,44 +242,26 @@ export const checkout = async (req: Request, res: Response) => {
         message: "No items in the friggin cart",
       });
     }
+
     // Calculate total price for all items in cart
-    // let total = 0;
-    // cart.cartItem.forEach(async (item) => {
-    //   let quantity = item.quantity;
-    //   let product = await findProductById(item.productId);
-    //   let price = product?.price;
-    //   console.log(quantity);
-    //   console.log(price);
-    //   console.log(quantity * Number(price))
-    //   total = total + quantity * Number(price);
-    // });
-
-    // @ts-ignore
     let total = cart.cartItem.reduce((total, item) => {
-      let quantity = item.quantity;
-      let product = findProductById(item.productId);
-      // @ts-ignore
-      let price = Number(product.price);
-      console.log(quantity);
-      console.log(product);
-      console.log(price);
-      // @ts-ignore
-      return total += quantity * price;  
-    })
-
-    console.log(total);
+      return total += item.quantity * Number(item.price);  
+    }, 0)
 
     // Generate order
-    // @ts-ignore
-    const order = createOrder(total, userId);
-    // @ts-ignore
-    const updatedOrder = addItemsToOrder(order, cart.cartItem);
+    const order = await createOrder(total, userId);
+
+    // Generate order items
+    const orderItems = await generateOrderItems(order, cart.cartItem[0]);
+    console.log(orderItems);
+
+    // const updatedOrder = await addItemsToOrder(order, cart.cartItem);
     // Remove cart (or all cart items)
 
     // Make charge to payment method (not required in this project)
 
     // On successful charge, update order status
-    return res.status(201).send(updatedOrder);
+    return res.status(201).send('Hello');
     
   } catch (err: any) {
     res.status(500).send({

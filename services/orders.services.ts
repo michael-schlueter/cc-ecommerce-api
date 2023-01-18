@@ -12,23 +12,12 @@ export const createOrder = (total: number, userId: number) => {
   });
 };
 
-export const addItemsToOrder = (order: Order, cartItems: CartItem[]) => {
-    const orderItems = cartItems.map(cartItem => {
-        return prisma.orderItem.create({
-            data: {
-                quantity: cartItem.quantity,
-                orderId: order.id,
-                productId: cartItem.productId
-            }
-        })
-    })
-    return prisma.order.update({
-        where: {
-            id: order.id
-        },
-        data: {
-            // @ts-ignore
-            orderItem: orderItems
-        }
-    })
-}
+export const generateOrderItems = (order: Order, cartItem: CartItem) => {
+  return prisma.orderItem.create({
+    data: {
+      orderId: order.id,
+      quantity: cartItem.quantity,
+      productId: cartItem.productId,
+    },
+  });
+};
