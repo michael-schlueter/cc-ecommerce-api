@@ -51,7 +51,7 @@ async function main() {
     create: {
       name: "T-Shirt",
       description: "Simple white t-shirt",
-      price: 12.99,
+      price: "12.99",
       image: "/images/tshirt.jpg",
       categories: {
         connectOrCreate: [
@@ -81,7 +81,7 @@ async function main() {
     create: {
       name: "Suit",
       description: "Elegant suit",
-      price: 99.99,
+      price: "99.99",
       image: "/images/suit.jpg",
       categories: {
         connectOrCreate: [
@@ -125,7 +125,8 @@ async function main() {
     create: {
       quantity: 1,
       cartId: 1,
-      productId: 1
+      productId: 1,
+      price: "99.99",
     }
   });
 
@@ -135,7 +136,8 @@ async function main() {
     create: {
       quantity: 2,
       cartId: 2,
-      productId: 2
+      productId: 2,
+      price: "12.99",
     }
   });
   const cartItemTShirtTwo = await prisma.cartItem.upsert({
@@ -144,7 +146,8 @@ async function main() {
     create: {
       quantity: 1,
       cartId: 2,
-      productId: 1
+      productId: 1,
+      price: "99.99",
     }
   });
 }

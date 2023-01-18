@@ -5,6 +5,7 @@ import {
   addItemToCart,
   deleteItemFromCart,
   updateItemQuantity,
+  checkout,
 } from "../controller/carts";
 import { checkAuthentication } from "../middleware";
 
@@ -15,5 +16,6 @@ cartRouter.post("/", checkAuthentication, createCart);
 cartRouter.post("/:id", checkAuthentication, addItemToCart);
 cartRouter.put("/", checkAuthentication, updateItemQuantity);
 cartRouter.delete("/", checkAuthentication, deleteItemFromCart);
+cartRouter.post("/:id/checkout", checkAuthentication, checkout);
 
 module.exports = cartRouter;

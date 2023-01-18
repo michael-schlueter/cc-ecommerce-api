@@ -8,6 +8,7 @@ import {
   findCartItemById,
   editQuantity,
 } from "../services/carts.services";
+import { addItemsToOrder, createOrder } from "../services/orders.services";
 import { findProductById } from "../services/products.services";
 import { findUserById } from "../services/users.services";
 
@@ -118,7 +119,7 @@ export const addItemToCart = async (req: Request, res: Response) => {
     }
 
     // Add cart item to the cart of the user
-    const cartItem = await createCartItem(userCart.id, parseInt(productId));
+    const cartItem = await createCartItem(userCart.id, parseInt(productId), parseInt(product.price));
     return res.status(201).send(cartItem);
   } catch (err: any) {
     return res.status(500).send({
@@ -208,6 +209,80 @@ export const deleteItemFromCart = async (req: Request, res: Response) => {
     return res.sendStatus(204);
   } catch (err: any) {
     return res.status(500).send({
+      message: err.message,
+    });
+  }
+};
+
+// @desc Checkout
+// @route POST /api/carts/checkout
+export const checkout = async (req: Request, res: Response) => {
+  const userId = req.payload?.userId;
+  // const { cartId, paymentInfo } = req.body;
+
+  try {
+    // Check if user is logged in
+    if (!userId) {
+      return res.status(400).send({
+        message: "User not logged in",
+      });
+    }
+
+    // Find cart for user
+    const cart = await findCartByUserId(userId);
+    if (!cart) {
+      return res.status(404).send({
+        message: "No friggin cart in the house",
+      });
+    }
+
+    // Check if cart has any items
+    if (cart.cartItem.length <= 0) {
+      return res.status(404).send({
+        message: "No items in the friggin cart",
+      });
+    }
+    // Calculate total price for all items in cart
+    // let total = 0;
+    // cart.cartItem.forEach(async (item) => {
+    //   let quantity = item.quantity;
+    //   let product = await findProductById(item.productId);
+    //   let price = product?.price;
+    //   console.log(quantity);
+    //   console.log(price);
+    //   console.log(quantity * Number(price))
+    //   total = total + quantity * Number(price);
+    // });
+
+    // @ts-ignore
+    let total = cart.cartItem.reduce((total, item) => {
+      let quantity = item.quantity;
+      let product = findProductById(item.productId);
+      // @ts-ignore
+      let price = Number(product.price);
+      console.log(quantity);
+      console.log(product);
+      console.log(price);
+      // @ts-ignore
+      return total += quantity * price;  
+    })
+
+    console.log(total);
+
+    // Generate order
+    // @ts-ignore
+    const order = createOrder(total, userId);
+    // @ts-ignore
+    const updatedOrder = addItemsToOrder(order, cart.cartItem);
+    // Remove cart (or all cart items)
+
+    // Make charge to payment method (not required in this project)
+
+    // On successful charge, update order status
+    return res.status(201).send(updatedOrder);
+    
+  } catch (err: any) {
+    res.status(500).send({
       message: err.message,
     });
   }

@@ -14,7 +14,7 @@ model Product {
   id          Int        @id @default(autoincrement())
   name        String
   description String
-  price       Decimal
+  price       String
   image       String
   categories  Category[]
   createdAt   DateTime   @default(now())
@@ -54,6 +54,7 @@ model Cart {
 model CartItem {
   id        Int      @id @default(autoincrement())
   quantity  Int
+  price     String
   cart      Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
   cartId    Int
   product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)

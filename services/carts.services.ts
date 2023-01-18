@@ -29,12 +29,13 @@ export const findCartItemById = (id: number) => {
   });
 };
 
-export const createCartItem = (cartId: number, productId: number) => {
+export const createCartItem = (cartId: number, productId: number, price: number) => {
   return prisma.cartItem.create({
     data: {
       quantity: 1,
       cartId,
       productId,
+      price,
     },
   });
 };
