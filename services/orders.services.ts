@@ -29,3 +29,11 @@ export const findOrdersByUserId = (id: number) => {
     }
   })
 }
+
+export const findOrderByOrderId = (id: number) => {
+  return prisma.order.findUnique({
+    where: {
+      id,
+    }
+  })
+}

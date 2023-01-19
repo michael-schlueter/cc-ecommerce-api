@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
-import { findOrdersByUserId } from "../services/orders.services";
+import { findOrderByOrderId, findOrdersByUserId } from "../services/orders.services";
 
 const prisma = new PrismaClient();
 
@@ -22,6 +22,33 @@ export const getOrdersByUserId = async (req: Request, res: Response) => {
         }
 
         return res.status(200).send(orders);
+    } catch (err: any) {
+        return res.status(500).send({
+            message: err.message
+        })
+    }
+}
+
+// @desc Get order for a specific orderId
+// @route GET /api/orders/id
+export const getOrderByOrderId = async (req: Request, res: Response) => {
+    const { orderId } = req.params;
+
+    try {
+        if (!orderId) {
+            return res.status(404).send({
+                message: "No valid orderId provided"
+            })
+        }
+
+        const order = findOrderByOrderId(parseInt(orderId));
+        if (!order) {
+            return res.status(400).send({
+                message: "No order found for this id"
+            })
+        }
+
+        return res.status(200).send(order);
     } catch (err: any) {
         return res.status(500).send({
             message: err.message
