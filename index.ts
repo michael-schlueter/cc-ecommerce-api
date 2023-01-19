@@ -7,6 +7,8 @@ dotenv.config();
 const userRouter = require("./routes/users");
 const productRouter = require("./routes/products");
 const cartRouter = require("./routes/carts");
+const orderRouter = require("./routes/orders");
+
 
 const app: Express = express();
 const port = process.env.PORT;

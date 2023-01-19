@@ -21,3 +21,11 @@ export const generateOrderItems = (order: Order, cartItem: CartItem) => {
     },
   });
 };
+
+export const findOrdersByUserId = (id: number) => {
+  return prisma.order.findMany({
+    where: {
+      userId: id
+    }
+  })
+}
