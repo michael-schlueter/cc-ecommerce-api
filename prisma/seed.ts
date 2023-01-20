@@ -1,4 +1,4 @@
-import { Prisma, PrismaClient } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 
 const bcrypt = require("bcrypt");
 
@@ -110,14 +110,14 @@ async function main() {
     update: {},
     create: {
       userId: 1,
-    }
+    },
   });
   const exampleCartTwo = await prisma.cart.upsert({
     where: { id: 2 },
     update: {},
     create: {
-      userId: 3
-    }
+      userId: 3,
+    },
   });
   const cartItemTShirt = await prisma.cartItem.upsert({
     where: { id: 1 },
@@ -127,7 +127,7 @@ async function main() {
       cartId: 1,
       productId: 1,
       price: "99.99",
-    }
+    },
   });
 
   const cartItemSuit = await prisma.cartItem.upsert({
@@ -138,7 +138,7 @@ async function main() {
       cartId: 2,
       productId: 2,
       price: "12.99",
-    }
+    },
   });
   const cartItemTShirtTwo = await prisma.cartItem.upsert({
     where: { id: 3 },
@@ -148,7 +148,7 @@ async function main() {
       cartId: 2,
       productId: 1,
       price: "99.99",
-    }
+    },
   });
 }
 

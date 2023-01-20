@@ -29,7 +29,11 @@ export const findCartItemById = (id: number) => {
   });
 };
 
-export const createCartItem = (cartId: number, productId: number, price: string) => {
+export const createCartItem = (
+  cartId: number,
+  productId: number,
+  price: string
+) => {
   return prisma.cartItem.create({
     data: {
       quantity: 1,
@@ -55,6 +59,14 @@ export const editQuantity = (id: number, quantity: number) => {
     },
     data: {
       quantity,
+    },
+  });
+};
+
+export const deleteCart = (id: number) => {
+  return prisma.cart.delete({
+    where: {
+      id,
     },
   });
 };

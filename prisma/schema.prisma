@@ -11,14 +11,14 @@ datasource db {
 }
 
 model Product {
-  id          Int        @id @default(autoincrement())
+  id          Int         @id @default(autoincrement())
   name        String
   description String
   price       String
   image       String
   categories  Category[]
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
   cartItem    CartItem[]
   orderItem   OrderItem[]
 }
@@ -58,9 +58,10 @@ model CartItem {
   cart      Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
   cartId    Int
   product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
-  productId Int      
+  productId Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
   @@unique([cartId, productId])
 }
 
@@ -80,7 +81,7 @@ model OrderItem {
   quantity  Int
   orderId   Int
   order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  productId Int      
+  productId Int
   product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

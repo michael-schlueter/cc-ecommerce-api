@@ -25,15 +25,32 @@ export const generateOrderItems = (order: Order, cartItem: CartItem) => {
 export const findOrdersByUserId = (id: number) => {
   return prisma.order.findMany({
     where: {
-      userId: id
-    }
-  })
-}
+      userId: id,
+    },
+  });
+};
 
 export const findOrderByOrderId = (id: number) => {
   return prisma.order.findUnique({
     where: {
       id,
-    }
-  })
-}
+    },
+    include: {
+      orderItem: true,
+    },
+  });
+};
+
+export const updateOrderStatus = (
+  id: number,
+  status: "Complete" | "Pending" | "Finalized" | "Cancelled"
+) => {
+  return prisma.order.update({
+    where: {
+      id,
+    },
+    data: {
+      status,
+    },
+  });
+};

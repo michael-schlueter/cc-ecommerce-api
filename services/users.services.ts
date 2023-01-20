@@ -22,7 +22,7 @@ export const findUserById = (id: number) => {
     include: {
       cart: true,
       order: true,
-    }
+    },
   });
 };
 
@@ -34,7 +34,7 @@ export const findUserByEmail = (email: string) => {
     include: {
       cart: true,
       order: true,
-    }
+    },
   });
 };
 

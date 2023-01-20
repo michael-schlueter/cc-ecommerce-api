@@ -5,28 +5,24 @@ import {
   createCartItem,
   findCartByUserId,
   removeCartItem,
-  findCartItemById,
   editQuantity,
+  deleteCart,
 } from "../services/carts.services";
-import { createOrder, generateOrderItems } from "../services/orders.services";
+import {
+  createOrder,
+  generateOrderItems,
+  updateOrderStatus,
+} from "../services/orders.services";
 import { findProductById } from "../services/products.services";
-import { findUserById } from "../services/users.services";
 
 const prisma = new PrismaClient();
 
 // @desc Get specific cart by userId
 // @route GET /api/carts/
 export const getCartByUserId = async (req: Request, res: Response) => {
-  const userId = req.payload?.userId;
+  const userId = req.payload!.userId;
 
   try {
-    // Check if user is not logged in (userId is provided)
-    if (!userId) {
-      return res.status(400).send({
-        message: "User not logged in",
-      });
-    }
-
     const cart = await findCartByUserId(userId);
 
     if (!cart) {
@@ -46,16 +42,9 @@ export const getCartByUserId = async (req: Request, res: Response) => {
 // @desc Create a cart
 // @route POST /api/carts/
 export const createCart = async (req: Request, res: Response) => {
-  const userId = req.payload?.userId;
+  const userId = req.payload!.userId;
 
   try {
-    // Check if user is not logged in (userId is provided)
-    if (!userId) {
-      return res.status(400).send({
-        message: "User not logged in",
-      });
-    }
-
     // Check if user already has an existing cart
     const cart = await findCartByUserId(userId);
     if (cart) {
@@ -78,17 +67,10 @@ export const createCart = async (req: Request, res: Response) => {
 // @desc Add an item to a cart
 // @route POST /api/carts/id
 export const addItemToCart = async (req: Request, res: Response) => {
-  const userId = req.payload?.userId;
+  const userId = req.payload!.userId;
   const { productId } = req.body;
 
   try {
-    // Check if user is not logged in (userId is provided)
-    if (!userId) {
-      return res.status(400).send({
-        message: "User not logged in",
-      });
-    }
-
     // Get the cart of the user
     const userCart = await findCartByUserId(userId);
     const product = await findProductById(parseInt(productId));
@@ -119,7 +101,11 @@ export const addItemToCart = async (req: Request, res: Response) => {
     }
 
     // Add cart item to the cart of the user
-    const cartItem = await createCartItem(userCart.id, parseInt(productId), product.price);
+    const cartItem = await createCartItem(
+      userCart.id,
+      parseInt(productId),
+      product.price
+    );
     return res.status(201).send(cartItem);
   } catch (err: any) {
     return res.status(500).send({
@@ -131,17 +117,10 @@ export const addItemToCart = async (req: Request, res: Response) => {
 // @desc Update quantity for an item from a cart
 // @route PUT /api/carts/
 export const updateItemQuantity = async (req: Request, res: Response) => {
-  const userId = req.payload?.userId;
+  const userId = req.payload!.userId;
   const { cartItemId, quantity } = req.body;
 
   try {
-    // Check if user is logged in
-    if (!userId) {
-      return res.status(400).send({
-        message: "User not logged in",
-      });
-    }
-
     const cart = await findCartByUserId(userId);
 
     if (!cart) {
@@ -179,17 +158,10 @@ export const updateItemQuantity = async (req: Request, res: Response) => {
 // @desc Delete an item from a cart
 // @route DELETE /api/carts/
 export const deleteItemFromCart = async (req: Request, res: Response) => {
-  const userId = req.payload?.userId;
+  const userId = req.payload!.userId;
   const { cartItemId } = req.body;
 
   try {
-    // Check if user is logged in
-    if (!userId) {
-      return res.status(400).send({
-        message: "User not logged in",
-      });
-    }
-
     const cart = await findCartByUserId(userId);
 
     if (!cart) {
@@ -217,52 +189,60 @@ export const deleteItemFromCart = async (req: Request, res: Response) => {
 // @desc Checkout
 // @route POST /api/carts/checkout
 export const checkout = async (req: Request, res: Response) => {
-  const userId = req.payload?.userId;
-  // const { cartId, paymentInfo } = req.body;
+  const userId = req.payload!.userId;
+  // const { paymentInfo } = req.body;
 
   try {
-    // Check if user is logged in
-    if (!userId) {
-      return res.status(400).send({
-        message: "User not logged in",
-      });
-    }
-
     // Find cart for user
     const cart = await findCartByUserId(userId);
     if (!cart) {
       return res.status(404).send({
-        message: "No friggin cart in the house",
+        message: "User has no cart",
       });
     }
 
     // Check if cart has any items
     if (cart.cartItem.length <= 0) {
       return res.status(404).send({
-        message: "No items in the friggin cart",
+        message: "There are no items in the cart",
       });
     }
 
     // Calculate total price for all items in cart
     let total = cart.cartItem.reduce((total, item) => {
-      return total += item.quantity * Number(item.price);  
-    }, 0)
+      return (total += item.quantity * Number(item.price));
+    }, 0);
 
     // Generate order
     const order = await createOrder(total, userId);
 
     // Generate order items
-    const orderItems = await generateOrderItems(order, cart.cartItem[0]);
-    console.log(orderItems);
+    const orderItems = await Promise.all(
+      cart.cartItem.map(async (item) => {
+        return await generateOrderItems(order, item);
+      })
+    );
 
-    // const updatedOrder = await addItemsToOrder(order, cart.cartItem);
-    // Remove cart (or all cart items)
+    if (orderItems.length <= 0 || !orderItems) {
+      return res.status(404).send({
+        message: "There are no order items to process",
+      });
+    }
 
     // Make charge to payment method (not required in this project)
 
     // On successful charge, update order status
-    return res.status(201).send('Hello');
-    
+    const updatedOrder = await updateOrderStatus(order.id, "Complete");
+
+    if (!updatedOrder) {
+      return res.status(400).send({
+        message: "Order was not able to process",
+      });
+    }
+
+    // / Remove cart (or all cart items)
+    await deleteCart(cart.id);
+    return res.status(201).send(updatedOrder);
   } catch (err: any) {
     res.status(500).send({
       message: err.message,

@@ -1,4 +1,4 @@
-import { PrismaClient, RefreshToken } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import { hashToken } from "../utils/hashToken";
 
 const prisma = new PrismaClient();

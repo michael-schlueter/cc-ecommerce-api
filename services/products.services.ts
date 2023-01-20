@@ -5,8 +5,8 @@ const prisma = new PrismaClient();
 export const findProducts = () => {
   return prisma.product.findMany({
     include: {
-      categories: true
-    }
+      categories: true,
+    },
   });
 };
 
@@ -16,8 +16,8 @@ export const findProductById = (id: number) => {
       id,
     },
     include: {
-      categories: true
-    }
+      categories: true,
+    },
   });
 };
 
@@ -27,10 +27,8 @@ export const findProductByCategoryId = (id: number) => {
       categories: {
         some: {
           id,
-        }
-      }
-    }
-  })
-}
-
-
+        },
+      },
+    },
+  });
+};
