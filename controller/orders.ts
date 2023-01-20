@@ -10,13 +10,9 @@ const prisma = new PrismaClient();
 // @desc Get orders for a specific user
 // @route GET /api/orders/
 export const getOrdersByUserId = async (req: Request, res: Response) => {
-  const userId = req.payload?.userId;
+  const userId = req.payload!.userId;
 
   try {
-    if (!userId) {
-      return res.status(400).send("User not logged in");
-    }
-
     const orders = await findOrdersByUserId(userId);
     if (orders.length == 0) {
       return res.status(404).send({
@@ -35,18 +31,13 @@ export const getOrdersByUserId = async (req: Request, res: Response) => {
 // @desc Get order for a specific orderId
 // @route GET /api/orders/id
 export const getOrderByOrderId = async (req: Request, res: Response) => {
-  const { orderId } = req.params;
+  const { id } = req.params;
 
   try {
-    if (!orderId) {
-      return res.status(404).send({
-        message: "No valid orderId provided",
-      });
-    }
+    const order = findOrderByOrderId(parseInt(id));
 
-    const order = findOrderByOrderId(parseInt(orderId));
     if (!order) {
-      return res.status(400).send({
+      return res.status(404).send({
         message: "No order found for this id",
       });
     }
