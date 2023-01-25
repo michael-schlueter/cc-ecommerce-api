@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
 import {
-  findProductByCategoryId,
+  findProductsByCategoryId,
   findProductById,
   findProducts,
 } from "../services/products.services";
@@ -21,7 +21,7 @@ export const getProducts = async (req: Request, res: Response) => {
         });
       }
 
-      const productsByCategory = await findProductByCategoryId(
+      const productsByCategory = await findProductsByCategoryId(
         parseInt(categoryId)
       );
 

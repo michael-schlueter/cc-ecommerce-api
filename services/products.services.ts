@@ -21,7 +21,7 @@ export const findProductById = (id: number) => {
   });
 };
 
-export const findProductByCategoryId = (id: number) => {
+export const findProductsByCategoryId = (id: number) => {
   return prisma.product.findMany({
     where: {
       categories: {
