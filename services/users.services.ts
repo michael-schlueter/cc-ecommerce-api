@@ -60,9 +60,7 @@ export const createUser = (user: INewUser) => {
 export const editUser = (
   id: number,
   email: string,
-  password: string,
-  firstName: string,
-  lastName: string
+  password: string
 ) => {
   return prisma.user.update({
     where: {
@@ -71,8 +69,6 @@ export const editUser = (
     data: {
       email,
       password: bcrypt.hashSync(password, 12),
-      firstName,
-      lastName,
     },
   });
 };

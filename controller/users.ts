@@ -1,4 +1,3 @@
-import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
 import {
   addRefreshTokenToWhitelist,
@@ -17,12 +16,10 @@ import {
   validatePassword,
 } from "../services/users.services";
 import { hashToken } from "../utils/hashToken";
-const { v4: uuidv4 } = require("uuid");
 import { generateTokens } from "../utils/jwt";
+const { v4: uuidv4 } = require("uuid");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-
-const prisma = new PrismaClient();
 
 // @desc Get all users
 // @route GET /api/users
@@ -163,22 +160,18 @@ export const loginUser = async (req: Request, res: Response) => {
 // @route /api/users/id
 export const updateUser = async (req: Request, res: Response) => {
   const { id } = req.params;
-  const { email, password, firstName, lastName } = req.body;
+  const { email, password } = req.body;
 
   try {
     if (
       email === "" ||
       email == null ||
       password === "" ||
-      password == null ||
-      firstName === "" ||
-      firstName == null ||
-      lastName === "" ||
-      lastName == null
+      password == null
     ) {
       return res.status(400).send({
         message:
-          "User data is missing (email, password, first and last name are required",
+          "Email or password is missing",
       });
     }
 
@@ -198,8 +191,13 @@ export const updateUser = async (req: Request, res: Response) => {
     }
 
     // Check if the user who is updating user information is the user him/herself
-    const user = await findUserById(req.payload!.userId);
     const userToUpdate = await findUserById(parseInt(id));
+
+    if (!userToUpdate) {
+      return res.status(404).send({
+        message: "User not found",
+      });
+    }
 
     if (req.payload!.userId !== userToUpdate?.id) {
       return res.status(403).send({
@@ -219,15 +217,7 @@ export const updateUser = async (req: Request, res: Response) => {
       parseInt(id),
       email,
       password,
-      firstName,
-      lastName
     );
-
-    if (!updatedUser) {
-      return res.status(404).send({
-        message: "User not found",
-      });
-    }
 
     return res.status(200).send(updatedUser);
   } catch (err: any) {
