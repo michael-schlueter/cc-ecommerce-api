@@ -21,7 +21,7 @@ export const findUserById = (id: number) => {
     },
     include: {
       cart: true,
-      order: true,
+      orders: true,
     },
   });
 };
@@ -33,7 +33,7 @@ export const findUserByEmail = (email: string) => {
     },
     include: {
       cart: true,
-      order: true,
+      orders: true,
     },
   });
 };

@@ -11,8 +11,6 @@ async function main() {
     create: {
       email: "alice@email.com",
       password: bcrypt.hashSync("P4$sword", 12),
-      firstName: "Alice",
-      lastName: "Cooper,",
     },
   });
   const bob = await prisma.user.upsert({
@@ -21,8 +19,6 @@ async function main() {
     create: {
       email: "bob@email.com",
       password: bcrypt.hashSync("P4$sword", 12),
-      firstName: "Bob",
-      lastName: "Dylan,",
     },
   });
   const carol = await prisma.user.upsert({
@@ -31,8 +27,6 @@ async function main() {
     create: {
       email: "carol@email.com",
       password: bcrypt.hashSync("P4$sword", 12),
-      firstName: "Carol",
-      lastName: "Deck,",
     },
   });
   const dauphne = await prisma.user.upsert({
@@ -41,8 +35,6 @@ async function main() {
     create: {
       email: "dauphne@email.com",
       password: bcrypt.hashSync("P4$sword", 12),
-      firstName: "Dauphne",
-      lastName: "Swan,",
     },
   });
   const tshirt = await prisma.product.upsert({
