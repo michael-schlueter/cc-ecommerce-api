@@ -27,7 +27,7 @@ const orderRouter = express.Router();
  *          example:
  *              total: 12.99
  *              status: Pending
- *              status: userId: 1
+ *              userId: 1
  *  securitySchemes:
  *      bearerAuth:
  *          type: http
@@ -53,11 +53,6 @@ const orderRouter = express.Router();
  *              $ref: '#/components/schemas/Order'
  *        "404":
  *          description: No orders found
- *  securitySchemes:
- *      bearerAuth:
- *          type: http
- *          scheme: bearer
- *          bearerFormat: JWT
  */
 orderRouter.get("/", checkAuthentication, getOrdersByUserId);
 
