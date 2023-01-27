@@ -24,10 +24,66 @@ const orderRouter = express.Router();
  *              userId:
  *                  type: integer
  *                  description: Numeric id of the user who created the order
+ *              createdAt:
+ *                  type: string
+ *                  format: date-time
+ *                  description: Date-time the order was created
+ *              updatedAt:
+ *                  type: string
+ *                  format: date-time
+ *                  description: Date-time the order was lastly updated
+ *              cartItems:
+ *                  type: array
+ *                  items:
+ *                    $ref: '#/components/schemas/OrderItem'
  *          example:
  *              total: 12.99
  *              status: Pending
  *              userId: 1
+ *              createdAt: 2023-01-25 14:09:46.881
+ *              updatedAt: 2023-01-25 14:09:46.881
+ *  securitySchemes:
+ *      bearerAuth:
+ *          type: http
+ *          scheme: bearer
+ *          bearerFormat: JWT
+ */
+
+/**
+ * @swagger
+ * components:
+ *  schemas:
+ *      OrderItem:
+ *          type: object
+ *          required:
+ *              - quantity
+ *              - price
+ *              - cartId
+ *              - productId
+ *          properties:
+ *              quantity:
+ *                  type: integer
+ *                  description: Quantity of the order item in a specific order
+ *              orderId:
+ *                  type: integer
+ *                  description: Numeric id of the order the item belongs to
+ *              productId:
+ *                  type: integer
+ *                  description: Numeric id of the product the orderItem represents
+ *              createdAt:
+ *                  type: string
+ *                  format: date-time
+ *                  description: Date-time the cartItem was created
+ *              updatedAt:
+ *                  type: string
+ *                  format: date-time
+ *                  description: Date-time the cartItem was lastly updated
+ *          example:
+ *              quantity: 2
+ *              orderId: 1
+ *              productId: 2
+ *              createdAt: 2023-01-25 14:09:46.881
+ *              updatedAt: 2023-01-25 14:09:46.881
  *  securitySchemes:
  *      bearerAuth:
  *          type: http
@@ -44,6 +100,15 @@ const orderRouter = express.Router();
  *        - application/json
  *      tags:
  *        - Orders
+ *      security:
+ *        - bearerAuth: []
+ *      parameters:
+ *        - name: userId
+ *          description: The user's ID, extracted from the payload of the provided access token
+ *          in: header
+ *          type: integer
+ *          required: true
+ *          example: 1
  *      responses:
  *        "200":
  *          description: Returns a list of all orders for a specific user
@@ -65,6 +130,8 @@ orderRouter.get("/", checkAuthentication, getOrdersByUserId);
  *        - application/json
  *      tags:
  *        - Orders
+ *      security:
+ *        - bearerAuth: []
  *      parameters:
  *        - name: id
  *          description: order id
@@ -81,4 +148,5 @@ orderRouter.get("/", checkAuthentication, getOrdersByUserId);
  *          description: Order not found
  */
 orderRouter.get("/:id", getOrderByOrderId);
+
 module.exports = orderRouter;
