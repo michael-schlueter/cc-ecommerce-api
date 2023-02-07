@@ -36,7 +36,7 @@ model User {
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
   cart          Cart?
-  orders         Order[]
+  orders        Order[]
   refreshTokens RefreshToken[]
 }
 

@@ -22,6 +22,7 @@ const swaggerOptions = {
     "./routes/orders.ts",
     "./routes/products.ts",
     "./routes/users.ts",
+    "./routes/components.yaml",
   ],
 };
 

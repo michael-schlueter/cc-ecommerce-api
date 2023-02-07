@@ -29,10 +29,25 @@ const userRouter = express.Router();
  *                  description: Email for the user, must be unique
  *              password:
  *                  type: string
+ *                  format: password
  *                  description: Password has to have at minimum 8 characters with one lowercase letter, one uppercase letter, one number and one special character
+ *              createdAt:
+ *                  type: string
+ *                  format: date-time
+ *                  description: Date-time the user was created
+ *              updatedAt:
+ *                  type: string
+ *                  format: date-time
+ *                  description: Date-time the user was lastly updated
+ *              orders:
+ *                  type: array
+ *                  items:
+ *                    $ref: 'orders.ts#/components/schemas/Order'
  *          example:
  *              email: testuser@test.com
  *              password: P4$sword
+ *              createdAt: 2023-01-25 14:09:46.881
+ *              updatedAt: 2023-01-25 14:09:46.881
  *  securitySchemes:
  *      bearerAuth:
  *          type: http
