@@ -90,6 +90,16 @@ components:
              password: P4$sword
              createdAt: 2023-01-25 14:09:46.881
              updatedAt: 2023-01-25 14:09:46.881
+     Category:
+         type: object
+         required:
+             - name
+         properties:
+             name:
+                 type: string
+                 description: Name of the category
+         example:
+             name: Summer
  securitySchemes:
      bearerAuth:
          type: http

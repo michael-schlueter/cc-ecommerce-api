@@ -43,21 +43,7 @@ const productRouter = express.Router();
  *              updatedAt: 2023-01-25 14:09:46.881
  */
 
-/**
- * @swagger
- * components:
- *  schemas:
- *      Category:
- *          type: object
- *          required:
- *              - name
- *          properties:
- *              name:
- *                  type: string
- *                  description: Name of the category
- *          example:
- *              name: Summer
- */
+
 
 /**
  * @swagger
