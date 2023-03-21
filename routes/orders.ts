@@ -8,51 +8,6 @@ const orderRouter = express.Router();
  * @swagger
  * components:
  *  schemas:
- *      Order:
- *          type: object
- *          required:
- *              - total
- *              - status
- *              - userId
- *          properties:
- *              total:
- *                  type: decimal
- *                  description: Total sum of all items of the order
- *              status:
- *                  type: string
- *                  description: Status of the order (pending, completed or executed)
- *              userId:
- *                  type: integer
- *                  description: Numeric id of the user who created the order
- *              createdAt:
- *                  type: string
- *                  format: date-time
- *                  description: Date-time the order was created
- *              updatedAt:
- *                  type: string
- *                  format: date-time
- *                  description: Date-time the order was lastly updated
- *              cartItems:
- *                  type: array
- *                  items:
- *                    $ref: '#/components/schemas/OrderItem'
- *          example:
- *              total: 12.99
- *              status: Pending
- *              userId: 1
- *              createdAt: 2023-01-25 14:09:46.881
- *              updatedAt: 2023-01-25 14:09:46.881
- *  securitySchemes:
- *      bearerAuth:
- *          type: http
- *          scheme: bearer
- *          bearerFormat: JWT
- */
-
-/**
- * @swagger
- * components:
- *  schemas:
  *      OrderItem:
  *          type: object
  *          required:
