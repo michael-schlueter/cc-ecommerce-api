@@ -100,6 +100,40 @@ components:
                  description: Name of the category
          example:
              name: Summer
+     Product:
+         type: object
+         properties:
+             name:
+                 type: string
+                 description: Name of the product
+             description:
+                 type: string
+                 description: Description of the product
+             price:
+                 type: string
+                 description: Price of the product
+             image:
+                 type: string
+                 description: URL path to image file
+             createdAt:
+                 type: array
+                 format: date-time
+                 description: Date-time the product was created
+             updatedAt:
+                 type: array
+                 format: date-time
+                 description: Date-time the product was lastly updated
+             categories:
+                 type: array
+                 items:
+                    $ref: '#/components/schemas/Category'
+         example:
+             name: T-Shirt
+             description: Black T-Shirt with white Logo
+             price: 12.99
+             image: /images/tshirt.jpg
+             createdAt: 2023-01-25 14:09:46.881
+             updatedAt: 2023-01-25 14:09:46.881
  securitySchemes:
      bearerAuth:
          type: http

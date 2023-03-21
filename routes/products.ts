@@ -5,48 +5,6 @@ const productRouter = express.Router();
 
 /**
  * @swagger
- * components:
- *  schemas:
- *      Product:
- *          type: object
- *          properties:
- *              name:
- *                  type: string
- *                  description: Name of the product
- *              description:
- *                  type: string
- *                  description: Description for the product
- *              price:
- *                  type: string
- *                  description: Price of the product
- *              image:
- *                  type: string
- *                  description: URL path to image file
- *              createdAt:
- *                  type: string
- *                  format: date-time
- *                  description: Date-time the product was created
- *              updatedAt:
- *                  type: string
- *                  format: date-time
- *                  description: Date-time the cartItem was lastly updated
- *              categories:
- *                  type: array
- *                  items:
- *                    $ref: '#/components/schemas/Category'
- *          example:
- *              name: T-Shirt
- *              description: Black T-Shirt with white Logo
- *              price: 12.99
- *              image: /images/tshirt.jpg
- *              createdAt: 2023-01-25 14:09:46.881
- *              updatedAt: 2023-01-25 14:09:46.881
- */
-
-
-
-/**
- * @swagger
  * /api/products:
  *    get:
  *      summary: Get all products or all products of a specific category
