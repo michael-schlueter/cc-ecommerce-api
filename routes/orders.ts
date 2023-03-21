@@ -6,48 +6,6 @@ const orderRouter = express.Router();
 
 /**
  * @swagger
- * components:
- *  schemas:
- *      OrderItem:
- *          type: object
- *          required:
- *              - quantity
- *              - price
- *              - cartId
- *              - productId
- *          properties:
- *              quantity:
- *                  type: integer
- *                  description: Quantity of the order item in a specific order
- *              orderId:
- *                  type: integer
- *                  description: Numeric id of the order the item belongs to
- *              productId:
- *                  type: integer
- *                  description: Numeric id of the product the orderItem represents
- *              createdAt:
- *                  type: string
- *                  format: date-time
- *                  description: Date-time the cartItem was created
- *              updatedAt:
- *                  type: string
- *                  format: date-time
- *                  description: Date-time the cartItem was lastly updated
- *          example:
- *              quantity: 2
- *              orderId: 1
- *              productId: 2
- *              createdAt: 2023-01-25 14:09:46.881
- *              updatedAt: 2023-01-25 14:09:46.881
- *  securitySchemes:
- *      bearerAuth:
- *          type: http
- *          scheme: bearer
- *          bearerFormat: JWT
- */
-
-/**
- * @swagger
  * /api/orders:
  *    get:
  *      summary: Get all orders for a specific user

@@ -168,6 +168,37 @@ components:
              userId: 1
              createdAt: 2023-01-25 14:09:46.881
              updatedAt: 2023-01-25 14:09:46.881
+     OrderItem:
+         type: object
+         required:
+             - quantity
+             - price
+             - cartId
+             - productId
+         properties:
+             quantity:
+                 type: integer
+                 description: Quantity of the order item in a specific order
+             orderId:
+                 type: integer
+                 description: Numeric id of the order the item belongs to
+             productId:
+                 type: integer
+                 description: Numeric id of the product the orderItem represents
+             createdAt:
+                 type: array
+                 format: date-time
+                 description: Date-time the orderItem was created
+             updatedAt:
+                 type: array
+                 format: date-time
+                 description: Date-time the orderItem was lastly updated
+         example:
+             quantity: 2
+             orderId: 1
+             productId: 2
+             createdAt: 2023-01-25 14:09:46.881
+             updatedAt: 2023-01-25 14:09:46.881
  securitySchemes:
      bearerAuth:
          type: http
