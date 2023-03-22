@@ -108,6 +108,44 @@ cartRouter.post("/", checkAuthentication, createCart);
  */
 cartRouter.post("/:id", checkAuthentication, addItemToCart);
 cartRouter.put("/", checkAuthentication, updateItemQuantity);
+
+/**
+ * @swagger
+ * /api/carts/:
+ *    delete:
+ *      summary: Removes a specific item from the user's cart
+ *      produces:
+ *        - application/json
+ *      tags:
+ *        - Carts
+ *      security:
+ *        - bearerAuth: []
+ *      parameters:
+ *        - name: userId
+ *          description: The user's ID, extracted from the payload of the provided access token
+ *          in: header
+ *          type: integer
+ *          required: true
+ *          example: 1
+ *      requestBody:
+ *        description: Item data of the item to remove
+ *        required: true
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                cartItemId:
+ *                  type: integer
+ *                  example: 1
+ *      responses:
+ *        "204":
+ *          description: Cart Item removed
+ *        "400":
+ *          description: Cart Item not found in Cart
+ *        "404":
+ *          description: Cart not found
+ */
 cartRouter.delete("/", checkAuthentication, deleteItemFromCart);
 cartRouter.post("/:id/checkout", checkAuthentication, checkout);
 
