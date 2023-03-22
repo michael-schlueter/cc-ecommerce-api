@@ -38,6 +38,33 @@ const cartRouter = express.Router();
  *          description: Cart not found
  */
 cartRouter.get("/", checkAuthentication, getCartByUserId);
+
+/**
+ * @swagger
+ * /api/carts:
+ *    post:
+ *      summary: Creates a new cart
+ *      produces:
+ *        - application/json
+ *      tags:
+ *        - Carts
+ *      security:
+ *        - bearerAuth: []
+ *      parameters:
+ *        - name: userId
+ *          description: The user's ID, extracted from the payload of the provided access token
+ *          in: header
+ *          type: integer
+ *          required: true
+ *          example: 1
+ *      responses:
+ *        "201":
+ *          description: Returns created cart
+ *          schema:
+ *            $ref: '#/components/schemas/Cart'
+ *        "400":
+ *          description: User already has an active cart
+ */
 cartRouter.post("/", checkAuthentication, createCart);
 cartRouter.post("/:id", checkAuthentication, addItemToCart);
 cartRouter.put("/", checkAuthentication, updateItemQuantity);
