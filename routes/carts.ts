@@ -66,6 +66,46 @@ cartRouter.get("/", checkAuthentication, getCartByUserId);
  *          description: User already has an active cart
  */
 cartRouter.post("/", checkAuthentication, createCart);
+
+/**
+ * @swagger
+ * /api/carts/{id}:
+ *    post:
+ *      summary: Add an item to the user's cart
+ *      produces:
+ *        - application/json
+ *      tags:
+ *        - Carts
+ *      security:
+ *        - bearerAuth: []
+ *      parameters:
+ *        - name: userId
+ *          description: The user's ID, extracted from the payload of the provided access token
+ *          in: header
+ *          type: integer
+ *          required: true
+ *          example: 1
+ *      requestBody:
+ *        description: Product data of the item to add
+ *        required: true
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                productId:
+ *                  type: integer
+ *                  example: 2
+ *      responses:
+ *        "201":
+ *          description: Item added to the user's cart
+ *          schema:
+ *            $ref: '#/components/schemas/CartItem'
+ *        "400":
+ *          description: Product does not exist / Item is already in cart
+ *        "404":
+ *          description: Cart not found
+ */
 cartRouter.post("/:id", checkAuthentication, addItemToCart);
 cartRouter.put("/", checkAuthentication, updateItemQuantity);
 cartRouter.delete("/", checkAuthentication, deleteItemFromCart);
