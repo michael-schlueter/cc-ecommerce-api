@@ -107,6 +107,49 @@ cartRouter.post("/", checkAuthentication, createCart);
  *          description: Cart not found
  */
 cartRouter.post("/:id", checkAuthentication, addItemToCart);
+
+/**
+ * @swagger
+ * /api/carts/:
+ *    put:
+ *      summary: Updates the quantity of an item in the user's cart
+ *      produces:
+ *        - application/json
+ *      tags:
+ *        - Carts
+ *      security:
+ *        - bearerAuth: []
+ *      parameters:
+ *        - name: userId
+ *          description: The user's ID, extracted from the payload of the provided access token
+ *          in: header
+ *          type: integer
+ *          required: true
+ *          example: 1
+ *      requestBody:
+ *        description: Updated item quantity
+ *        required: true
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                cartItemId:
+ *                  type: integer
+ *                  example: 1
+ *                quantity:
+ *                  type: integer
+ *                  example: 3
+ *      responses:
+ *        "200":
+ *          description: Returns updated cart item
+ *          schema:
+ *            $ref: '#/components/schemas/CartItem'
+ *        "400":
+ *          description: Item not found in the cart / You have to provide a valid quantity (positive number)
+ *        "404":
+ *          description: Cart not found
+ */
 cartRouter.put("/", checkAuthentication, updateItemQuantity);
 
 /**

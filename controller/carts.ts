@@ -132,7 +132,7 @@ export const updateItemQuantity = async (req: Request, res: Response) => {
     // Check if cartItem belongs to the cart of the user
     if (!cart.cartItem.find((item) => item.id === parseInt(cartItemId))) {
       return res.status(400).send({
-        message: "Unauthorized to remove item from this cart",
+        message: "Item not found in the cart",
       });
     }
 
