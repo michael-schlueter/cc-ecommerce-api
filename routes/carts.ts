@@ -190,6 +190,35 @@ cartRouter.put("/", checkAuthentication, updateItemQuantity);
  *          description: Cart not found
  */
 cartRouter.delete("/", checkAuthentication, deleteItemFromCart);
+
+/**
+ * @swagger
+ * /api/carts:
+ *    post:
+ *      summary: Creates a new order
+ *      produces:
+ *        - application/json
+ *      tags:
+ *        - Carts
+ *      security:
+ *        - bearerAuth: []
+ *      parameters:
+ *        - name: userId
+ *          description: The user's ID, extracted from the payload of the provided access token
+ *          in: header
+ *          type: integer
+ *          required: true
+ *          example: 1
+ *      responses:
+ *        "201":
+ *          description: Returns created order
+ *          schema:
+ *            $ref: '#/components/schemas/Order'
+ *        "400":
+ *          description: Order was not able to process
+ *        "404":
+ *          description: User has no cart / There are no items in the cart
+ */
 cartRouter.post("/:id/checkout", checkAuthentication, checkout);
 
 module.exports = cartRouter;
