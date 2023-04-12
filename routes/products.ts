@@ -52,6 +52,8 @@ productRouter.get("/", getProducts);
  *          description: Returns a single product with its categories
  *          schema:
  *            $ref: '#/components/schemas/Product'
+ *        "400":
+ *          description: Expected productId to be of type number
  *        "404":
  *          description: Product not found
  */
