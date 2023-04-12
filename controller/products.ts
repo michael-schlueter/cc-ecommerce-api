@@ -53,9 +53,15 @@ export const getProducts = async (req: Request, res: Response) => {
 // @route GET /api/products/id
 export const getProductById = async (req: Request, res: Response) => {
   const { id } = req.params;
+  const productId = parseInt(id);
 
   try {
-    const product = await findProductById(parseInt(id));
+    if (Number.isNaN(productId)) {
+      return res.status(400).send({
+        message: "Expected productId to be a number"
+      })
+    }
+    const product = await findProductById(productId);
 
     if (!product) {
       return res.status(404).send({

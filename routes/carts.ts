@@ -193,7 +193,7 @@ cartRouter.delete("/", checkAuthentication, deleteItemFromCart);
 
 /**
  * @swagger
- * /api/carts:
+ * /api/carts/checkout:
  *    post:
  *      summary: Creates a new order
  *      produces:
