@@ -146,7 +146,7 @@ cartRouter.post("/:id", checkAuthentication, addItemToCart);
  *          schema:
  *            $ref: '#/components/schemas/CartItem'
  *        "400":
- *          description: Item not found in the cart / You have to provide a valid quantity (positive number)
+ *          description: Item not found in the cart / You have to provide a valid quantity (positive number) / "Expected cartItemId and quantity to be a number"
  *        "404":
  *          description: Cart not found
  */
@@ -185,7 +185,7 @@ cartRouter.put("/", checkAuthentication, updateItemQuantity);
  *        "204":
  *          description: Cart Item removed
  *        "400":
- *          description: Cart Item not found in Cart
+ *          description: Cart Item not found in Cart / Expected cartItemId to be a number
  *        "404":
  *          description: Cart not found
  */
