@@ -151,7 +151,7 @@ export const updateItemQuantity = async (req: Request, res: Response) => {
       });
     }
 
-    if (!quantity || quantity === "0") {
+    if (!quantity || quantity < 1) {
       return res.status(400).send({
         message: "You have to provide a valid quantity (positive number)",
       });
