@@ -68,12 +68,19 @@ export const createCart = async (req: Request, res: Response) => {
 // @route POST /api/carts/id
 export const addItemToCart = async (req: Request, res: Response) => {
   const userId = req.payload!.userId;
-  const { productId } = req.body;
+  let { productId } = req.body;
+  productId = parseInt(productId);
 
   try {
     // Get the cart of the user
     const userCart = await findCartByUserId(userId);
-    const product = await findProductById(parseInt(productId));
+
+    if (Number.isNaN(productId)) {
+      return res.status(400).send({
+        message: "Expected productId to be a number"
+      })
+    }
+    const product = await findProductById(productId);
 
     if (!product) {
       return res.status(400).send({
@@ -91,7 +98,7 @@ export const addItemToCart = async (req: Request, res: Response) => {
     if (
       userCart.cartItem.find(
         (cartItem) =>
-          cartItem.productId === parseInt(productId) &&
+          cartItem.productId === productId &&
           cartItem.cartId === userCart.id
       )
     ) {
@@ -103,7 +110,7 @@ export const addItemToCart = async (req: Request, res: Response) => {
     // Add cart item to the cart of the user
     const cartItem = await createCartItem(
       userCart.id,
-      parseInt(productId),
+      productId,
       product.price
     );
     return res.status(201).send(cartItem);
@@ -118,7 +125,9 @@ export const addItemToCart = async (req: Request, res: Response) => {
 // @route PUT /api/carts/
 export const updateItemQuantity = async (req: Request, res: Response) => {
   const userId = req.payload!.userId;
-  const { cartItemId, quantity } = req.body;
+  let { cartItemId, quantity } = req.body;
+  cartItemId = parseInt(cartItemId);
+  quantity = parseInt(quantity);
 
   try {
     const cart = await findCartByUserId(userId);
@@ -129,8 +138,14 @@ export const updateItemQuantity = async (req: Request, res: Response) => {
       });
     }
 
+    if (Number.isNaN(cartItemId) || Number.isNaN(quantity)) {
+      return res.status(400).send({
+        message: "Expected cartItemId and quantity to be a number"
+      })
+    }
+
     // Check if cartItem belongs to the cart of the user
-    if (!cart.cartItem.find((item) => item.id === parseInt(cartItemId))) {
+    if (!cart.cartItem.find((item) => item.id === cartItemId)) {
       return res.status(400).send({
         message: "Item not found in the cart",
       });
@@ -143,8 +158,8 @@ export const updateItemQuantity = async (req: Request, res: Response) => {
     }
 
     const updatedCartItem = await editQuantity(
-      parseInt(cartItemId),
-      parseInt(quantity)
+      cartItemId,
+      quantity
     );
 
     return res.status(200).send(updatedCartItem);
@@ -159,7 +174,8 @@ export const updateItemQuantity = async (req: Request, res: Response) => {
 // @route DELETE /api/carts/
 export const deleteItemFromCart = async (req: Request, res: Response) => {
   const userId = req.payload!.userId;
-  const { cartItemId } = req.body;
+  let { cartItemId } = req.body;
+  cartItemId = parseInt(cartItemId);
 
   try {
     const cart = await findCartByUserId(userId);
@@ -170,13 +186,19 @@ export const deleteItemFromCart = async (req: Request, res: Response) => {
       });
     }
 
+    if (Number.isNaN(cartItemId)) {
+      return res.status(400).send({
+        message: "Expected cartItemId to be a number"
+      })
+    }
+
     // Check if cartItem belongs to the cart of the user
-    if (!cart.cartItem.find((item) => item.id === parseInt(cartItemId))) {
+    if (!cart.cartItem.find((item) => item.id === cartItemId)) {
       return res.status(400).send({
         message: "Cart item not found in cart",
       });
     }
-    await removeCartItem(parseInt(cartItemId));
+    await removeCartItem(cartItemId);
 
     return res.sendStatus(204);
   } catch (err: any) {

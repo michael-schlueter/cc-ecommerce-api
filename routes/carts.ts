@@ -102,7 +102,7 @@ cartRouter.post("/", checkAuthentication, createCart);
  *          schema:
  *            $ref: '#/components/schemas/CartItem'
  *        "400":
- *          description: Product does not exist / Item is already in cart
+ *          description: Product does not exist / Item is already in cart / Expected productId to be of type number
  *        "404":
  *          description: Cart not found
  */
