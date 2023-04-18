@@ -209,7 +209,7 @@ export const deleteItemFromCart = async (req: Request, res: Response) => {
 };
 
 // @desc Checkout
-// @route POST /api/carts/checkout
+// @route POST /api/carts/id/checkout
 export const checkout = async (req: Request, res: Response) => {
   const userId = req.payload!.userId;
   // const { paymentInfo } = req.body;
