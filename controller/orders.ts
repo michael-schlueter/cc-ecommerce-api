@@ -1,11 +1,8 @@
-import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
 import {
   findOrderByOrderId,
   findOrdersByUserId,
 } from "../services/orders.services";
-
-const prisma = new PrismaClient();
 
 // @desc Get orders for a specific user
 // @route GET /api/orders/
@@ -32,9 +29,17 @@ export const getOrdersByUserId = async (req: Request, res: Response) => {
 // @route GET /api/orders/id
 export const getOrderByOrderId = async (req: Request, res: Response) => {
   const { id } = req.params;
+  const orderId = parseInt(id);
 
   try {
-    const order = findOrderByOrderId(parseInt(id));
+    if (Number.isNaN(orderId)) {
+      return res.status(400).send({
+        message: "Expected orderId to be a number"
+      })
+    }
+
+    const order = await findOrderByOrderId(orderId);
+    console.log(order);
 
     if (!order) {
       return res.status(404).send({

@@ -57,6 +57,8 @@ orderRouter.get("/", checkAuthentication, getOrdersByUserId);
  *          description: Returns a single order
  *          schema:
  *            $ref: '#/components/schemas/Order'
+ *        "400":
+ *          description: Expected orderId to be a number
  *        "404":
  *          description: Order not found
  */
