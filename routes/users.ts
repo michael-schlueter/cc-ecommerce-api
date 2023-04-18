@@ -55,6 +55,8 @@ userRouter.get("/", getAllUsers);
  *          description: Returns a user along with his/her cart and orders
  *          schema:
  *            $ref: '#/components/schemas/User'
+ *        "400":
+ *          description: Expected userId to be a number
  *        "404":
  *          description: User not found
  */
@@ -173,7 +175,7 @@ userRouter.post("/login", loginUser);
  *          schema:
  *            $ref: '#/components/schemas/User'
  *        "400":
- *          description: No valid email / password provided or email is already in use
+ *          description: No valid email / password provided or email is already in use / Expected userId to be a number
  *        "401":
  *          description: User not authenticated
  *        "403":
@@ -204,6 +206,8 @@ userRouter.put("/:id", checkAuthentication, updateUser);
  *      responses:
  *        "204":
  *          description: User deleted
+ *        "400":
+ *          description: Expected userId to be a number
  *        "401":
  *          description: User not authenticated
  *        "403":

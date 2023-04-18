@@ -45,9 +45,15 @@ export const getAllUsers = async (req: Request, res: Response) => {
 // @route GET /api/users/id
 export const getUserById = async (req: Request, res: Response) => {
   const { id } = req.params;
+  const userId = parseInt(id);
 
   try {
-    const user = await findUserById(parseInt(id));
+    if (Number.isNaN(userId)) {
+      return res.status(400).send({
+        message: "Expected userId to be a number"
+      })
+    }
+    const user = await findUserById(userId);
 
     if (!user) {
       return res.status(404).send({
@@ -160,6 +166,7 @@ export const loginUser = async (req: Request, res: Response) => {
 // @route /api/users/id
 export const updateUser = async (req: Request, res: Response) => {
   const { id } = req.params;
+  const userId = parseInt(id);
   const { email, password } = req.body;
 
   try {
@@ -191,7 +198,12 @@ export const updateUser = async (req: Request, res: Response) => {
     }
 
     // Check if the user who is updating user information is the user him/herself
-    const userToUpdate = await findUserById(parseInt(id));
+    if (Number.isNaN(userId)) {
+      return res.status(400).send({
+        message: "Expected userId to be a number"
+      })
+    }
+    const userToUpdate = await findUserById(userId);
 
     if (!userToUpdate) {
       return res.status(404).send({
@@ -214,7 +226,7 @@ export const updateUser = async (req: Request, res: Response) => {
     }
 
     const updatedUser = await editUser(
-      parseInt(id),
+      userId,
       email,
       password,
     );
@@ -231,9 +243,15 @@ export const updateUser = async (req: Request, res: Response) => {
 // @route DELETE /api/users/id
 export const deleteUser = async (req: Request, res: Response) => {
   const { id } = req.params;
+  const userId = parseInt(id);
 
   try {
-    const userToDelete = await findUserById(parseInt(id));
+    if (Number.isNaN(userId)) {
+      return res.status(400).send({
+        message: "Expected userId to be a number"
+      })
+    }
+    const userToDelete = await findUserById(userId);
 
     if (!userToDelete) {
       return res.status(404).send({
@@ -247,7 +265,7 @@ export const deleteUser = async (req: Request, res: Response) => {
       });
     }
 
-    await removeUser(parseInt(id));
+    await removeUser(userId);
 
     return res.sendStatus(204);
   } catch (err: any) {
