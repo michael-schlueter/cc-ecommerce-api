@@ -60,7 +60,7 @@ Will follow
 
 
 ## Project Status
-This project is far from done. I only built the foundation of it. This API is supposed to be used with an accomodating front-end. Before I fix all the details, I want to build the front-end first to have more information about what is required in terms of API functionality. Therefore this project is on hold and will be continued after the front-end is finished. There are several features which are yet to be included e.g., discounts, recommendations, inventory considerations, additional user information (payment information), processing payments etc.
+This project is far from done. I only built the foundation of it. This API is supposed to be used with an accomodating front-end. Before I fix all the details, I want to build the front-end first to have more information about what is required in terms of API functionality. Therefore this project is on hold and will be continued once the front-end is finished. There are several features which are yet to be included e.g., discounts, recommendations, inventory considerations, additional user information (payment information), processing payments etc.
 
 
 
